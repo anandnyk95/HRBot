@@ -1,0 +1,24 @@
+{
+  "name": "bot1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/storage-blob": "^12.15.0",
+    "botbuilder": "^4.20.0",
+    "botbuilder-ai": "^4.20.0",
+    "botbuilder-azure": "^4.20.0",
+    "botbuilder-dialogs": "^4.20.0",
+    "botbuilder-handoff": "^0.2.0",
+    "dotenv": "^16.3.1",
+    "msal": "^1.4.18",
+    "nodemon": "^3.0.1",
+    "restify": "^11.1.0"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "text": "Welcome to the Anand's HR bot! How can I assist you with HR-related queries?",
+  "adaptiveCard": {
+    "type": "AdaptiveCard",
+    "body": [
+      {
+        "type": "TextBlock",
+        "text": "Choose an option:",
+        "size": "Medium",
+        "weight": "Bolder",
+        "wrap": true
+      }
+    ],
+    "actions": [
+      {
+        "type": "Action.Submit",
+        "title": "HR Services",
+        "data": {
+          "action": "HRServices"
+        }
+      },
+      {
+        "type": "Action.Submit",
+        "title": "Help",
+        "data": {
+          "action": "Help"
+        }
+      }
+    ]
+  }
+}
