@@ -39,6 +39,7 @@ class HRBot extends ActivityHandler {
             break;
           default:
             // Handle unknown action
+            await context.sendActivity("Sorry, I didn't understand that. Please try again.");
             break;
         }
       } else {
@@ -77,7 +78,7 @@ class HRBot extends ActivityHandler {
     // Add other activity handlers here...
 
   }
-  
+
   async sendWelcomeMessage(context) {
     // Create an Adaptive Card attachment
     const cardAttachment = CardFactory.adaptiveCard(welcomeCard.adaptiveCard);
