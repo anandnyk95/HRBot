@@ -25,6 +25,13 @@
         "data": {
           "action": "Help"
         }
+      },
+      {
+        "type": "Action.Submit",
+        "title": "Open AI",
+        "data": {
+          "action": "OpenAI"
+        }
       }
     ]
   }

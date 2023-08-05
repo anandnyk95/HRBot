@@ -1,16 +1,17 @@
 const { ActivityTypes, ActivityHandler, MessageFactory, ConversationState, TurnContext, UserState, CardFactory } = require('botbuilder');
-const { DialogSet, DialogTurnStatus } = require('botbuilder-dialogs');
-// const { CardFactory } = require('botbuilder-ai');
+const { DialogSet, DialogTurnStatus, WaterfallDialog, TextPrompt } = require('botbuilder-dialogs');
 const { HRDialog } = require('./dialogs/hrDialog');
 const { HelpDialog } = require('./dialogs/helpDialog');
-const welcomeCard = require('./welcomeCard.json'); // Import the welcome card from the JSON file
+const welcomeCard = require('../resources/welcomeCard.json');
+const openai = require('../resources/apiServices/open_ai_api');
 
 class HRBot extends ActivityHandler {
   constructor(conversationState, userState) {
     super();
 
-    // Set up state management
+    // Create and add conversation state
     this.conversationState = conversationState;
+    this.conversationStateAccessor = this.conversationState.createProperty('conversationState');
     this.userState = userState;
 
     // Add dialogs
@@ -21,18 +22,41 @@ class HRBot extends ActivityHandler {
 
     // Handle incoming activities
     this.onMessage(async (context, next) => {
-      const dc = await this.dialogs.createContext(context);
-      const dialogResult = await dc.continueDialog();
-      if (!context.responded) {
-        switch (dialogResult.status) {
-          case DialogTurnStatus.empty:
-            // Fallback to HR dialog as the default
-            await dc.beginDialog('hrDialog');
+      // Check if the message is an adaptive card action
+      if (context.activity.type === ActivityTypes.Message && context.activity.value && context.activity.value.action) {
+        // Handle the adaptive card action based on the action value
+        switch (context.activity.value.action) {
+          case 'HRServices':
+            await this.sendHRServices(context);
             break;
-          case DialogTurnStatus.complete:
-            // End of turn
-            await dc.endDialog();
+          case 'Help':
+            await this.sendHelp(context);
             break;
+          case 'OpenAI':
+            // // Start the user input dialog
+            // const dc = await this.dialogs.createContext(context);
+            // await dc.beginDialog('userInputDialog');
+            await this.handleOpenAI(context);
+            break;
+          default:
+            // Handle unknown action
+            break;
+        }
+      } else {
+        // Handle regular messages with dialogs
+        const dc = await this.dialogs.createContext(context);
+        const dialogResult = await dc.continueDialog();
+        if (!context.responded) {
+          switch (dialogResult.status) {
+            case DialogTurnStatus.empty:
+              // Fallback to HR dialog as the default
+              await dc.beginDialog('hrDialog');
+              break;
+            case DialogTurnStatus.complete:
+              // End of turn
+              await dc.endDialog();
+              break;
+          }
         }
       }
       await next();
@@ -52,7 +76,18 @@ class HRBot extends ActivityHandler {
     });
 
     // Add other activity handlers here...
-    
+
+  }
+
+  // Handle Open AI API
+  async handleOpenAI(context) {
+    try {
+      const response = await openai.createCompletionApi();
+      await context.sendActivity(`OpenAI Response: ${response}`);
+    } catch (error) {
+      console.error('Error calling OpenAI API:', error.message);
+      await context.sendActivity('Sorry, something went wrong while processing your request.');
+    }
   }
 
   async sendWelcomeMessage(context) {
