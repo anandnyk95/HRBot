@@ -3,7 +3,7 @@ const { DialogSet, DialogTurnStatus, WaterfallDialog, TextPrompt } = require('bo
 const { HRDialog } = require('./dialogs/hrDialog');
 const { HelpDialog } = require('./dialogs/helpDialog');
 const welcomeCard = require('../resources/welcomeCard.json');
-const openai = require('../resources/apiServices/open_ai_api');
+const { OpenAI } = require('./dialogs/openAI');
 
 class HRBot extends ActivityHandler {
   constructor(conversationState, userState) {
@@ -18,6 +18,7 @@ class HRBot extends ActivityHandler {
     this.dialogs = new DialogSet(this.conversationState.createProperty('dialogState'));
     this.dialogs.add(new HRDialog('hrDialog'));
     this.dialogs.add(new HelpDialog('helpDialog'));
+    this.dialogs.add(new OpenAI('openAI'));
     // Add other dialogs here
 
     // Handle incoming activities
@@ -34,7 +35,7 @@ class HRBot extends ActivityHandler {
             await dc.beginDialog('helpDialog');
             break;
           case 'OpenAI':
-            await this.handleOpenAI(context);
+            await dc.beginDialog('openAI');
             break;
           default:
             // Handle unknown action
@@ -76,18 +77,7 @@ class HRBot extends ActivityHandler {
     // Add other activity handlers here...
 
   }
-
-  // Handle Open AI API
-  async handleOpenAI(context) {
-    try {
-      const response = await openai.createCompletionApi();
-      await context.sendActivity(`OpenAI Response: ${response}`);
-    } catch (error) {
-      console.error('Error calling OpenAI API:', error.message);
-      await context.sendActivity('Sorry, something went wrong while processing your request.');
-    }
-  }
-
+  
   async sendWelcomeMessage(context) {
     // Create an Adaptive Card attachment
     const cardAttachment = CardFactory.adaptiveCard(welcomeCard.adaptiveCard);
