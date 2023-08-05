@@ -1,16 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-// ------------- Uncomment this after putting the real Microsoft Auth----------
-// const path = require('path');
-
-// const dotenv = require('dotenv');
-// // Import required bot configuration.
-// const ENV_FILE = path.join(__dirname, '.env');
-// dotenv.config({ path: ENV_FILE });
-
-// -----------------------------------------------------------------------------
-
 const restify = require('restify');
 
 const { AuthenticationMiddleware } = require('./src/middleware/authenticationMiddleware');
