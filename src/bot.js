@@ -13,6 +13,7 @@ class HRBot extends ActivityHandler {
     this.conversationState = conversationState;
     this.conversationStateAccessor = this.conversationState.createProperty('conversationState');
     this.userState = userState;
+    this.userProfileAccessor = this.userState.createProperty('userProfile');
 
     // Add dialogs
     this.dialogs = new DialogSet(this.conversationState.createProperty('dialogState'));
@@ -34,7 +35,9 @@ class HRBot extends ActivityHandler {
         if (dialogResult.status === DialogTurnStatus.complete && dialogResult.result) {
           // Store the captured name in user state or any other preferred location
           const userName = dialogResult.result;
-    
+          const userProfile = await this.userProfileAccessor.get(context, {}); // Get the user's profile from userState
+          userProfile.name = userName; // Save the captured name to the profile
+          await this.userProfileAccessor.set(context, userProfile); // Save the updated profile back to userState
           // Now you can proceed with the rest of the logic based on the captured name
         } 
           // Check if the message is an adaptive card action
