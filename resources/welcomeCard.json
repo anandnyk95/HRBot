@@ -1,5 +1,5 @@
 {
-  "text": "Welcome to the Anand's HR bot! How can I assist you with HR-related queries?",
+  "text": "Greetings from HR Bot.",
   "adaptiveCard": {
     "type": "AdaptiveCard",
     "body": [
