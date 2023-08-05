@@ -24,18 +24,16 @@ class HRBot extends ActivityHandler {
     this.onMessage(async (context, next) => {
       // Check if the message is an adaptive card action
       if (context.activity.type === ActivityTypes.Message && context.activity.value && context.activity.value.action) {
+        const dc = await this.dialogs.createContext(context);
         // Handle the adaptive card action based on the action value
         switch (context.activity.value.action) {
           case 'HRServices':
-            await this.sendHRServices(context);
+            await dc.beginDialog('hrDialog');
             break;
           case 'Help':
-            await this.sendHelp(context);
+            await dc.beginDialog('helpDialog');
             break;
           case 'OpenAI':
-            // // Start the user input dialog
-            // const dc = await this.dialogs.createContext(context);
-            // await dc.beginDialog('userInputDialog');
             await this.handleOpenAI(context);
             break;
           default:
@@ -103,6 +101,7 @@ class HRBot extends ActivityHandler {
 
     await context.sendActivity(welcomeMessageActivity);
   }
+
 }
 
 module.exports.HRBot = HRBot;
